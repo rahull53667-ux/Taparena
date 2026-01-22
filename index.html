@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TapArena — Official</title>
+<style>
+  :root{--bg:#0b1220;--card:#111a2f;--accent:#4da3ff;--muted:#aab4d4;--text:#ffffff;--line:rgba(255,255,255,.12);}
+  body{margin:0;background:radial-gradient(1200px 800px at 20% 0%, #16233a 0%, var(--bg) 50%);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+  .wrap{max-width:900px;margin:0 auto;padding:18px;}
+  .top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:10px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .logo{width:46px;height:46px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4da3ff,#a8c2ff);color:#07101f;font-weight:900;}
+  h1{margin:0;font-size:26px;}
+  .tag{color:var(--muted);font-size:13px;margin-top:4px;}
+  .card{background:rgba(17,26,47,.75);border:1px solid var(--line);border-radius:18px;padding:18px;margin-top:14px;}
+  .grid{display:grid;grid-template-columns:1.3fr .7fr;gap:14px;}
+  .btn{display:inline-block;text-decoration:none;background:var(--accent);color:#07101f;font-weight:900;padding:12px 14px;border-radius:14px;}
+  .btn2{display:inline-block;text-decoration:none;background:rgba(255,255,255,.06);border:1px solid var(--line);color:var(--text);font-weight:900;padding:12px 14px;border-radius:14px;margin-left:8px;}
+  .steps{display:grid;gap:10px;margin-top:12px;}
+  .step{border:1px solid var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.03);}
+  .small{color:var(--muted);font-size:12px;line-height:1.5}
+  .proof{border:1px dashed var(--line);border-radius:14px;padding:12px;background:rgba(255,255,255,.02);color:var(--muted);font-size:13px;line-height:1.5}
+  .foot{color:#8892b0;font-size:12px;text-align:center;margin:18px 0 6px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">TA</div>
+        <div>
+          <h1>TapArena</h1>
+          <div class="tag">Official • Skill-based reaction game</div>
+        </div>
+      </div>
+      <div class="small">No luck • No gambling • Play fair</div>
+    </div>
+
+    <div class="card">
+      <div class="grid">
+        <div>
+          <h2 style="margin:0 0 8px 0;">Daily Tap Challenge</h2>
+          <div class="small">
+            Tap fast for 60 seconds. Your score is based on speed and accuracy. Top players win rewards in daily tournaments.
+          </div>
+
+          <div style="margin-top:14px;">
+            <a class="btn" href="./taparena.html">Play Now</a>
+            <a class="btn2" href="#" onclick="alert('Replace this link with your Telegram channel or support contact.');return false;">Telegram</a>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <b>1) Open game</b>
+              <div class="small">Click “Play Now”. No login needed.</div>
+            </div>
+            <div class="step">
+              <b>2) Play 60 seconds</b>
+              <div class="small">Tap the targets as fast as you can.</div>
+            </div>
+            <div class="step">
+              <b>3) Submit score</b>
+              <div class="small">Take a screenshot and submit in the official Telegram round.</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="proof">
+            <b>Trust & Safety</b><br/>
+            • This is a skill-based competition.<br/>
+            • Winners are announced publicly.<br/>
+            • Avoid random links — use only the official TapArena page.<br/>
+          </div>
+
+          <div class="proof" style="margin-top:12px;">
+            <b>Proof Box (you add)</b><br/>
+            Add winner screenshots + payout proof here (daily). This is what makes people trust the platform.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot">© TapArena — Skill-based game platform</div>
+  </div>
+</body>
+</html>

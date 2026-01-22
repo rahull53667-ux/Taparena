@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TapArena – Fast Reaction Game</title>
+<style>
+  :root{
+    --bg:#0b1220;
+    --card:#111a2f;
+    --accent:#4da3ff;
+    --muted:#aab4d4;
+    --text:#ffffff;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    text-align: center;
+  }
+  .container {
+    max-width: 440px;
+    margin: auto;
+    padding: 18px;
+  }
+  .brand {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-top: 10px;
+  }
+  .logo {
+    width:42px;height:42px;border-radius:14px;
+    display:flex;align-items:center;justify-content:center;
+    background: linear-gradient(135deg, #4da3ff, #a8c2ff);
+    color:#07101f;font-weight:900;
+    letter-spacing:0.5px;
+  }
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    color: var(--accent);
+    letter-spacing:0.4px;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin: 10px 0 16px 0;
+    line-height: 1.4;
+  }
+  .info {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 12px 0;
+    font-size: 15px;
+  }
+  .pill{
+    flex:1;
+    border:1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.04);
+    border-radius: 14px;
+    padding: 10px 10px;
+  }
+  .arena {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    background: var(--card);
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 18px;
+    margin: 14px 0 10px 0;
+    overflow: hidden;
+  }
+  .target {
+    width: 64px;
+    height: 64px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    box-shadow: 0 10px 24px rgba(77,163,255,.25);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#07101f;
+    font-weight:900;
+    user-select:none;
+  }
+  .target:active{
+    transform: scale(0.97);
+  }
+  button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border: none;
+    border-radius: 14px;
+    background: var(--accent);
+    color: #07101f;
+    font-weight: 900;
+    cursor: pointer;
+  }
+  button:disabled {
+    background: #24344e;
+    color: #8fa3bf;
+    cursor: not-allowed;
+  }
+  .row {
+    display:flex;
+    gap:10px;
+    margin-top: 10px;
+  }
+  .row button{
+    width: 100%;
+  }
+  .secondary{
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.14);
+    color: var(--text);
+    font-weight:800;
+  }
+  .result {
+    font-size: 18px;
+    margin-top: 10px;
+    color: #eaf0ff;
+    min-height: 28px;
+  }
+  .hint {
+    font-size: 12px;
+    color: #8892b0;
+    margin-top: 10px;
+    line-height: 1.4;
+  }
+  .footer {
+    font-size: 12px;
+    color: #8892b0;
+    margin-top: 18px;
+  }
+  .kbd{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,.14);
+    background: rgba(255,255,255,.05);
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="brand">
+    <div class="logo">TA</div>
+    <div style="text-align:left">
+      <h1>TapArena</h1>
+      <div class="subtitle">Skill-based fast reaction challenge • 60 seconds • highest score wins</div>
+    </div>
+  </div>
+
+  <div class="info">
+    <div class="pill">⏱ Time: <span id="time">60</span>s</div>
+    <div class="pill">🎯 Score: <span id="score">0</span></div>
+  </div>
+
+  <div class="arena" id="arena" aria-label="Game arena"></div>
+
+  <button id="startBtn">START GAME</button>
+  <div class="row">
+    <button id="copyBtn" class="secondary" disabled>COPY SCORE</button>
+    <button id="resetBtn" class="secondary">RESET</button>
+  </div>
+
+  <div class="result" id="result"></div>
+
+  <div class="hint">
+    Tip: record your screen while playing, then share the score screenshot in your Telegram challenge group.<br/>
+    This version is offline (no login). For tournaments, you host rounds and verify scores.
+  </div>
+
+  <div class="footer">TapArena • Skill-based game • No luck • Play fair</div>
+</div>
+
+<script>
+  const arena = document.getElementById("arena");
+  const scoreEl = document.getElementById("score");
+  const timeEl = document.getElementById("time");
+  const startBtn = document.getElementById("startBtn");
+  const resetBtn = document.getElementById("resetBtn");
+  const copyBtn = document.getElementById("copyBtn");
+  const resultEl = document.getElementById("result");
+
+  let score = 0;
+  let timeLeft = 60;
+  let timerInterval = null;
+  let running = false;
+
+  function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+  function randomPosition() {
+    const size = 64;
+    const x = Math.random() * (arena.clientWidth - size);
+    const y = Math.random() * (arena.clientHeight - size);
+    return { x: clamp(x, 0, arena.clientWidth - size), y: clamp(y, 0, arena.clientHeight - size) };
+  }
+
+  function createTarget() {
+    arena.innerHTML = "";
+    const target = document.createElement("div");
+    target.className = "target";
+    target.textContent = "TAP";
+    const pos = randomPosition();
+    target.style.left = pos.x + "px";
+    target.style.top = pos.y + "px";
+
+    target.onclick = () => {
+      if (!running) return;
+      score++;
+      scoreEl.textContent = score;
+      createTarget();
+    };
+
+    arena.appendChild(target);
+  }
+
+  function startGame() {
+    if (running) return;
+    running = true;
+    score = 0;
+    timeLeft = 60;
+    scoreEl.textContent = score;
+    timeEl.textContent = timeLeft;
+    resultEl.textContent = "";
+    startBtn.disabled = true;
+    copyBtn.disabled = true;
+
+    createTarget();
+
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      timeEl.textContent = timeLeft;
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+  }
+
+  function endGame() {
+    running = false;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    arena.innerHTML = "";
+    startBtn.disabled = false;
+    copyBtn.disabled = false;
+    resultEl.textContent = "🏁 Final Score: " + score;
+  }
+
+  function resetAll() {
+    running = false;
+    clearInterval(timerInterval);
+    timerInterval = null;
+    score = 0;
+    timeLeft = 60;
+    scoreEl.textContent = score;
+    timeEl.textContent = timeLeft;
+    arena.innerHTML = "";
+    startBtn.disabled = false;
+    copyBtn.disabled = true;
+    resultEl.textContent = "";
+  }
+
+  async function copyScore() {
+    const text = "TapArena score: " + score;
+    try {
+      await navigator.clipboard.writeText(text);
+      resultEl.textContent = "✅ Copied: " + text;
+    } catch (e) {
+      resultEl.textContent = "Copy failed. Score: " + score;
+    }
+  }
+
+  startBtn.addEventListener("click", startGame);
+  resetBtn.addEventListener("click", resetAll);
+  copyBtn.addEventListener("click", copyScore);
+
+  // initial state
+  resetAll();
+</script>
+</body>
+</html>
