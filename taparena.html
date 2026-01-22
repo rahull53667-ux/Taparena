@@ -1,80 +1,281 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TapArena — Daily Tap Challenge</title>
-  <meta name="description" content="Skill-based fast reaction tap challenge. 60 seconds. Highest score wins." />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TapArena — Game</title>
+  <meta name="description" content="60-second tap game. Highest score wins." />
   <style>
     :root{
       --bg:#0b1220;
       --card:#111a2f;
-      --card2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#9fb0d0;
       --accent:#4da3ff;
-      --accent2:#33d6ff;
-      --text:#ffffff;
-      --muted:#aab4d4;
-      --good:#3dff9a;
+      --good:#34d399;
       --bad:#ff5c7a;
-      --shadow: 0 16px 45px rgba(0,0,0,.45);
-      --radius: 18px;
+      --radius:18px;
+      --shadow:0 14px 40px rgba(0,0,0,.35);
     }
     *{box-sizing:border-box}
     body{
-      margin:0;
-      min-height:100vh;
-      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(1200px 600px at 50% -200px, rgba(77,163,255,.35), transparent 60%),
-        radial-gradient(900px 500px at 20% 20%, rgba(51,214,255,.18), transparent 60%),
-        radial-gradient(700px 500px at 90% 30%, rgba(77,163,255,.15), transparent 65%),
-        var(--bg);
+      margin:0;min-height:100vh;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      display:flex;
-      justify-content:center;
-      padding:18px 14px 40px;
+      background:
+        radial-gradient(900px 520px at 25% 10%, rgba(77,163,255,.22), transparent 60%),
+        radial-gradient(700px 420px at 80% 30%, rgba(77,163,255,.12), transparent 60%),
+        var(--bg);
     }
-    .container{width:100%; max-width:460px;}
-    .topbar{
-      display:flex; align-items:center; gap:12px;
-      padding:12px 10px 6px;
+    .wrap{max-width:520px;margin:0 auto;padding:18px}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px
     }
+    .brand{display:flex;align-items:center;gap:10px}
     .logo{
-      width:48px; height:48px; border-radius:14px;
-      background: linear-gradient(145deg, rgba(77,163,255,.9), rgba(51,214,255,.65));
-      display:flex; align-items:center; justify-content:center;
-      box-shadow: 0 10px 30px rgba(77,163,255,.25);
-      font-weight:800;
-      letter-spacing:.5px;
+      width:44px;height:44px;border-radius:14px;background:rgba(77,163,255,.18);
+      display:grid;place-items:center;font-weight:800;color:var(--accent);
+      border:1px solid rgba(77,163,255,.25)
     }
-    .brand h1{margin:0; font-size:26px; line-height:1.1}
-    .brand p{margin:2px 0 0; color:var(--muted); font-size:13px}
-    .pillrow{
-      display:flex; gap:10px; flex-wrap:wrap;
-      padding:10px 10px 0;
-    }
-    .pill{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
-      padding:8px 12px;
-      border-radius:999px;
-      color:var(--muted);
-      font-size:12px;
-      backdrop-filter: blur(6px);
+    h1{margin:0;font-size:22px;line-height:1.1}
+    .sub{margin:2px 0 0;color:var(--muted);font-size:12px}
+    a.back{
+      text-decoration:none;color:var(--text);
+      padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      font-weight:700;
     }
 
-    .card{
-      margin-top:12px;
-      background: linear-gradient(180deg, rgba(17,26,47,.92), rgba(12,18,33,.92));
+    .stats{
+      display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0;
+    }
+    .stat{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:16px;padding:12px;
+      box-shadow:var(--shadow);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .stat b{font-size:18px}
+    .muted{color:var(--muted);font-size:12px}
+
+    .arena{
+      height:420px;
+      border-radius:22px;
+      background:rgba(255,255,255,.03);
       border:1px solid rgba(255,255,255,.08);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      box-shadow:var(--shadow);
+      position:relative;
       overflow:hidden;
+      display:grid;
+      place-items:center;
+      margin-top:8px;
     }
 
-    .hero{
-      padding:16px 16px 12px;
-      border-bottom:1px solid rgba(255,255,255,.08);
+    .target{
+      width:96px;height:96px;border-radius:999px;
+      border:1px solid rgba(77,163,255,.45);
+      background:rgba(77,163,255,.22);
+      display:grid;place-items:center;
+      font-weight:900;letter-spacing:.8px;
+      user-select:none;
+      touch-action:manipulation;
+      cursor:pointer;
+      box-shadow:0 10px 25px rgba(0,0,0,.35);
+      transform:translate3d(0,0,0);
+      transition:transform .08s ease;
     }
-    .hero h2{margin:0; font-size:22px}
-    .hero p{margin:
+    .target:active{transform:scale(.95)}
+    .hint{
+      position:absolute;inset:auto 0 14px 0;
+      text-align:center;color:rgba(159,176,208,.85);font-size:12px;
+      padding:0 14px;
+    }
+
+    .btnrow{
+      display:flex;gap:10px;flex-wrap:wrap;margin-top:14px
+    }
+    button{
+      appearance:none;border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      border-radius:16px;
+      padding:12px 14px;
+      font-weight:800;
+      min-width:160px;
+      cursor:pointer;
+    }
+    button.primary{
+      background:rgba(77,163,255,.22);
+      border-color:rgba(77,163,255,.35);
+    }
+    button:disabled{opacity:.45;cursor:not-allowed}
+    .toast{
+      margin-top:10px;
+      font-size:12px;color:rgba(159,176,208,.9)
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">TA</div>
+        <div>
+          <h1>TapArena</h1>
+          <div class="sub">60 seconds • Highest score wins</div>
+        </div>
+      </div>
+      <a class="back" href="./index.html">Home</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div>
+          <div class="muted">Time</div>
+          <b id="time">60s</b>
+        </div>
+        <div class="muted">⏱️</div>
+      </div>
+      <div class="stat">
+        <div>
+          <div class="muted">Score</div>
+          <b id="score">0</b>
+        </div>
+        <div class="muted">🎯</div>
+      </div>
+    </div>
+
+    <div class="arena" id="arena" aria-label="Tap Arena">
+      <div class="target" id="target">TAP</div>
+      <div class="hint" id="hint">Tap the circle as fast as you can. Press Start to begin.</div>
+    </div>
+
+    <div class="btnrow">
+      <button class="primary" id="startBtn">START GAME</button>
+      <button id="copyBtn" disabled>COPY SCORE</button>
+      <button id="resetBtn">RESET</button>
+    </div>
+
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <script>
+    const timeEl = document.getElementById("time");
+    const scoreEl = document.getElementById("score");
+    const hintEl = document.getElementById("hint");
+    const toastEl = document.getElementById("toast");
+    const target = document.getElementById("target");
+    const arena = document.getElementById("arena");
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const copyBtn = document.getElementById("copyBtn");
+
+    let score = 0;
+    let timeLeft = 60;
+    let running = false;
+    let timerId = null;
+
+    function setToast(msg){
+      toastEl.textContent = msg || "";
+    }
+
+    function updateUI(){
+      timeEl.textContent = `${timeLeft}s`;
+      scoreEl.textContent = score;
+    }
+
+    function randomPos(){
+      const pad = 18;
+      const size = target.getBoundingClientRect().width;
+      const rect = arena.getBoundingClientRect();
+      const maxX = rect.width - size - pad;
+      const maxY = rect.height - size - pad - 30; // keep hint space
+      const x = pad + Math.random() * Math.max(0, maxX - pad);
+      const y = pad + Math.random() * Math.max(0, maxY - pad);
+      target.style.position = "absolute";
+      target.style.left = `${x}px`;
+      target.style.top = `${y}px`;
+    }
+
+    function startGame(){
+      if (running) return;
+      running = true;
+      score = 0;
+      timeLeft = 60;
+      copyBtn.disabled = true;
+      hintEl.textContent = "GO! Tap fast 🔥";
+      setToast("");
+      updateUI();
+      randomPos();
+
+      timerId = setInterval(() => {
+        timeLeft -= 1;
+        updateUI();
+        if (timeLeft <= 0){
+          endGame();
+        }
+      }, 1000);
+    }
+
+    function endGame(){
+      running = false;
+      clearInterval(timerId);
+      timerId = null;
+      hintEl.textContent = `Finished! Your score: ${score}`;
+      copyBtn.disabled = false;
+      setToast("Tip: Take screenshot & share in Telegram.");
+      // center target
+      target.style.left = "50%";
+      target.style.top = "50%";
+      target.style.transform = "translate(-50%, -50%)";
+      target.textContent = "DONE";
+    }
+
+    function resetGame(){
+      running = false;
+      clearInterval(timerId);
+      timerId = null;
+      score = 0;
+      timeLeft = 60;
+      copyBtn.disabled = true;
+      target.textContent = "TAP";
+      target.style.transform = "translate(0,0)";
+      target.style.left = "50%";
+      target.style.top = "50%";
+      target.style.transform = "translate(-50%, -50%)";
+      hintEl.textContent = "Tap the circle as fast as you can. Press Start to begin.";
+      setToast("");
+      updateUI();
+    }
+
+    target.addEventListener("click", () => {
+      if (!running) return;
+      score += 1;
+      scoreEl.textContent = score;
+      // move
+      target.textContent = "TAP";
+      target.style.transform = "translate(0,0)";
+      randomPos();
+    });
+
+    startBtn.addEventListener("click", startGame);
+    resetBtn.addEventListener("click", resetGame);
+
+    copyBtn.addEventListener("click", async () => {
+      const text = `TapArena Score: ${score}`;
+      try{
+        await navigator.clipboard.writeText(text);
+        setToast("Copied ✅ Now paste in Telegram.");
+      }catch(e){
+        // fallback
+        setToast("Copy failed. Manually type your score.");
+      }
+    });
+
+    // init
+    resetGame();
+  </script>
+</body>
+</html>
